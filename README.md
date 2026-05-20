@@ -74,9 +74,9 @@ subgraph CLIENT["🏢 CLIENT NETWORK"]
 
     EDGE["📥 Logstash Edge Collector"]
 
-    KFW -->|"Agent Syslog 5514"| EDGE
-    LNX -->|"Beats 5044"| EDGE
-    WIN -->|"Beats 5044"| EDGE
+    KFW -->|"Syslog 5514"| EDGE
+    LNX -->|"Agent 5044"| EDGE
+    WIN -->|"Agent 5044"| EDGE
     SW -->|"Syslog 514"| EDGE
     RTR -->|"Syslog 514"| EDGE
     UFW -->|"Syslog 514"| EDGE
@@ -86,8 +86,8 @@ subgraph CLIENT["🏢 CLIENT NETWORK"]
 
     EDGE -->|"Edge to Central 20004"| CFW
 
-    LNX -.->|"Fleet 20003"| CFW
-    WIN -.->|"Fleet 20003"| CFW
+    LNX -.->|"Agent <-> Fleet 20003"| CFW
+    WIN -.->|"Agent <-> Fleet 20003"| CFW
 end
 
 %% =========================
@@ -105,16 +105,16 @@ subgraph COMTEL["☁️ COMTEL NETWORK"]
 
     KB["📈 Kibana"]
 
-    COMFW -->|"9800"| CENTRAL
+    COMFW -->|"Logstash Central 9800"| CENTRAL
 
     CENTRAL -->|"9200 / HTTPS"| ES
 
     ES -->|"5601 / HTTPS"| KB
 
-    COMFW -.->|"8220"| FLEET
+    COMFW -.->|"<-Fleet 8220->"| FLEET
 end
 
-CFW -->|"NAT 20004 → 9800"| COMFW
+CFW -->|"20004 → 9800"| COMFW
 
 CFW -.->|"20003 → 8220"| COMFW
 ```
@@ -130,12 +130,12 @@ Client devices send logs to Logstash Edge Collector.
 | Source | Protocol | Port |
 |---|---|---|
 | Firewalls | Syslog | 514 |
-| Linux Servers | Beats | 5044 |
-| Windows Servers | Beats | 5044 |
+| Linux Servers | Agent | 5044 |
+| Windows Servers | Agent | 5044 |
 | Switches | Syslog | 514 |
 | Routers | Syslog | 514 |
 | Unknown Firewalls | Syslog | 514 |
-| Known Firewalls | Agent Syslog | 5514 |
+| Known Firewalls | Syslog To Agent | 5514 |
 
 ---
 
@@ -208,6 +208,10 @@ Elastic Agents communicate with Fleet Server.
 | Service | Port |
 |---|---|
 | Fleet Server | 8220 |
+
+```text
+TCP 20003 → NAT → 8220
+```
 
 Features:
 
