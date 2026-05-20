@@ -70,7 +70,7 @@ subgraph COMTEL["COMTEL NETWORK"]
 
     FLEET["Fleet Server"]
 
-    COMFW --> CENTRAL
+    COMFW -- "9800" --> CENTRAL
 
     CENTRAL -- "9200 / HTTPS" --> ES
 
