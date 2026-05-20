@@ -46,7 +46,7 @@ subgraph CLIENT["CLIENT NETWORK"]
 
     CFW["Client Firewall"]
 
-    EDGE -- "20004" --> CFW
+    EDGE -- "Logstash Edge To Central 20004" --> CFW
 end
 
 %% =========================
@@ -79,7 +79,7 @@ subgraph COMTEL["COMTEL NETWORK"]
     CENTRAL -- "8220 / HTTPS" --> FLEET
 end
 
-CFW --> COMFW
+CFW -- "20004 Edge To Central 9800" --> COMFW
 
 WIN -. "Agent to Fleet:20003" .-> CFW
 LNX -. "Agent to Fleet:20003" .-> CFW
