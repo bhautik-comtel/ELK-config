@@ -38,9 +38,9 @@ subgraph CLIENT["CLIENT NETWORK"]
     EDGE["Logstash Edge Collector"]
 
     FW --  "514" --> EDGE
-    KFW -- "5514" --> EDGE
-    LNX -- "5044" --> EDGE
-    WIN -- "5044" --> EDGE
+    KFW -- "5514 Agent Receive" --> EDGE
+    LNX -- "Agent send 5044" --> EDGE
+    WIN -- "Agent send 5044" --> EDGE
     SW --  "514" --> EDGE
     RTR -- "514" --> EDGE
     OTH -- "514" --> EDGE
@@ -86,7 +86,7 @@ CFW --> COMFW
 
 WIN -. "Agent to Fleet:20003" .-> CFW
 LNX -. "Agent to Fleet:20003" .-> CFW
-CFW -. "Agent to Fleet" .-> COMFW -."Agent to Fleet 8220".-> FLEET
+CFW -. "20003 Agent to Fleet 8220" .-> COMFW -."Agent to Fleet 8220".-> FLEET
 ```
 
 ---
