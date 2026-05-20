@@ -38,9 +38,9 @@ subgraph CLIENT["CLIENT NETWORK"]
     EDGE["Logstash Edge Collector"]
 
     FW --  "syslog 514" --> EDGE
-    KFW -- "5514 Agent Receive" --> EDGE
-    LNX -- "Agent send 5044" --> EDGE
-    WIN -- "Agent send 5044" --> EDGE
+    KFW -- "to Agent 5514" --> EDGE
+    LNX -- "From Agent 5044" --> EDGE
+    WIN -- "From Agent 5044" --> EDGE
     SW --  "syslog 514" --> EDGE
     RTR -- "syslog 514" --> EDGE
     OTH -- "syslog 514" --> EDGE
@@ -82,7 +82,7 @@ end
 
 CFW --> COMFW
 
-WIN -.      "Agent to Fleet:20003" .-> CFW
+WIN -. "Agent to Fleet:20003" .-> CFW
 LNX -. "Agent to Fleet:20003" .-> CFW
 CFW -. "20003 Agent to Fleet 8220" .-> COMFW -."Agent to Fleet 8220".-> FLEET
 ```
@@ -221,9 +221,6 @@ Fleet Server manages Elastic Agents.
 
 Agents connect through:
 
-```text
-Public IP / Internet
-```
 
 ---
 
