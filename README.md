@@ -76,7 +76,6 @@ subgraph COMTEL["COMTEL NETWORK"]
 
     ES -- "5601 / HTTPS" --> KB
 
-    CENTRAL -- "8220 / HTTPS" --> FLEET
 end
 
 CFW -- "20004 Edge To Central 9800" --> COMFW
