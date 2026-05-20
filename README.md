@@ -242,19 +242,39 @@ Features:
 
 ## Client Network
 
-### Inbound
+### Logstash Inbound
 
 ```text
 UDP 514   ← Syslog Devices
 TCP 5044  ← Elastic Agents
 TCP 5514  ← Known Firewalls
+TCP 20003 ← Agent to Fleet Manager Communication
 ```
 
-### Outbound
+### Logstash Outbound
 
 ```text
-TCP 20004 → Comtel Network
-TCP 8220  → Fleet Server
+TCP 20004 → To Central Logstash 
+TCP 20003 → Agent to Fleet Manager Communication
+```
+
+### Windows/Linux System Outbound
+
+```text
+TCP 5044 → Elastic Agent To Logstash Edge
+TCP 20003  → Agent to Fleet Manager Communication
+```
+### Firewall Outbound 
+
+```text
+TCP 20004 → To Central Logstash
+TCP 20003 → Agent to Fleet Manager Communication
+```
+
+### Firewall Inbound
+
+```text
+TCP 20003 → Agent to Fleet Manager Communication
 ```
 
 ---
