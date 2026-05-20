@@ -54,7 +54,7 @@ end
 %% WAN / INTERNET
 %% =========================
 
-INET["Public IP / Internet"]
+
 
 %% =========================
 %% COMTEL NETWORK
