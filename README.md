@@ -129,7 +129,6 @@ Client devices send logs to Logstash Edge Collector.
 
 | Source | Protocol | Port |
 |---|---|---|
-| Firewalls | Syslog | 514 |
 | Linux Servers | Agent | 5044 |
 | Windows Servers | Agent | 5044 |
 | Switches | Syslog | 514 |
@@ -227,72 +226,17 @@ Features:
 | Port | Protocol | Purpose |
 |------|-----------|----------|
 | 514 | UDP | Syslog Collection |
-| 5044 | TCP | Beats / Elastic Agent |
+| 5044 | TCP | Syslog to Elastic Agent |
 | 5514 | TCP | Syslog via Agent |
-| 8220 | HTTPS | Fleet Server |
+| 8220 | HTTPS | Fleet Server communication |
 | 9200 | HTTPS | Elasticsearch API |
 | 5601 | HTTPS | Kibana UI |
-| 20004 | TCP | Edge to Central |
-| 9800 | TCP | NAT Translated Central Port |
+| 20004 | TCP | Logstash Edge to Logstash Central |
+| 20003 | TCP | Client Agent To Fleet Server |
+| 9800 | TCP | Logstash To Logstash |
 
 ---
 
-# 📥 Logstash Configurations
-
-## Logstash Edge
-
-```ruby
-input {
-
-  udp {
-    port => 514
-    type => "syslog"
-  }
-
-  tcp {
-    port => 5044
-    type => "beats"
-  }
-
-  tcp {
-    port => 5514
-    type => "agent-syslog"
-  }
-}
-
-output {
-
-  tcp {
-    host => "logstash-central"
-    port => 20004
-    codec => json
-  }
-}
-```
-
----
-
-## Logstash Central
-
-```ruby
-input {
-
-  tcp {
-    port => 9800
-    codec => json
-  }
-}
-
-output {
-
-  elasticsearch {
-    hosts => ["https://elasticsearch:9200"]
-    index => "logs-%{+YYYY.MM.dd}"
-  }
-}
-```
-
----
 
 # 🔐 Firewall Rules
 
