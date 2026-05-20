@@ -84,9 +84,9 @@ end
 
 CFW --> COMFW
 
-WIN -. "Agent:20003" .-> CFW
-LNX -. "Agent:20003" .-> CFW
-CFW -.-> COMFW -."8220".-> FLEET
+WIN -. "Agent to Fleet:20003" .-> CFW
+LNX -. "Agent to Fleet:20003" .-> CFW
+CFW -. "Agent to Fleet" .-> COMFW -."Agent to Fleet 8220".-> FLEET
 ```
 
 ---
