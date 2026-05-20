@@ -33,7 +33,6 @@ subgraph CLIENT["CLIENT NETWORK"]
     FW["Unknown Firewalls"]
     OTH["Other Devices"]
 
-    AGENT["Elastic Agents"]
 
     EDGE["Logstash Edge Collector"]
 
