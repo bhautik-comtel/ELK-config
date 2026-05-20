@@ -84,7 +84,8 @@ end
 
 CFW --> COMFW
 
-WIN -. "Fleet Communication : 20003" .-> CFW
+WIN -. "Agent:20003" .-> CFW
+LNX -. "Agent:20003" .-> CFW
 CFW -.-> COMFW -."8220".-> FLEET
 ```
 
