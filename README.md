@@ -37,15 +37,13 @@ subgraph CLIENT["CLIENT NETWORK"]
 
     EDGE["Logstash Edge Collector"]
 
-    FW --  "514" --> EDGE
+    FW --  "syslog 514" --> EDGE
     KFW -- "5514 Agent Receive" --> EDGE
     LNX -- "Agent send 5044" --> EDGE
     WIN -- "Agent send 5044" --> EDGE
-    SW --  "514" --> EDGE
-    RTR -- "514" --> EDGE
-    OTH -- "514" --> EDGE
-
-    AGENT -- "Beats : 5044" --> EDGE
+    SW --  "syslog 514" --> EDGE
+    RTR -- "syslog 514" --> EDGE
+    OTH -- "syslog 514" --> EDGE
 
     CFW["Client Firewall"]
 
