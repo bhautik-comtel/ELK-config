@@ -37,7 +37,7 @@ subgraph CLIENT["CLIENT NETWORK"]
     EDGE["Logstash Edge Collector"]
 
     FW --  "syslog 514" --> EDGE
-    KFW -- "to Agent 5514" --> EDGE
+    KFW -- "To Agent 5514" --> EDGE
     LNX -- "From Agent 5044" --> EDGE
     WIN -- "From Agent 5044" --> EDGE
     SW --  "syslog 514" --> EDGE
