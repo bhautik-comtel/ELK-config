@@ -25,29 +25,31 @@ flowchart LR
 %% =========================
 subgraph CLIENT["CLIENT NETWORK"]
 
-    FW["Firewalls"]
-    LNX["Linux Servers"]
-    WIN["Windows Servers"]
+    KFW["Known Firewalls"]
+    LNX["Linux Servers With Fleet Agent"]
+    WIN["Windows Servers With Fleet Agent"]
     SW["Switches"]
     RTR["Routers"]
+    FW["Unknown Firewalls"]
     OTH["Other Devices"]
 
     AGENT["Elastic Agents"]
 
     EDGE["Logstash Edge Collector"]
 
-    FW -- "Syslog : 514" --> EDGE
-    LNX -- "Syslog : 514" --> EDGE
-    WIN -- "Syslog : 514" --> EDGE
-    SW -- "Syslog : 514" --> EDGE
-    RTR -- "Syslog : 514" --> EDGE
-    OTH -- "Syslog : 514" --> EDGE
+    FW --  "514" --> EDGE
+    KFW -- "5514" --> EDGE
+    LNX -- "5044" --> EDGE
+    WIN -- "5044" --> EDGE
+    SW --  "514" --> EDGE
+    RTR -- "514" --> EDGE
+    OTH -- "514" --> EDGE
 
     AGENT -- "Beats : 5044" --> EDGE
 
     CFW["Client Firewall"]
 
-    EDGE -- "5044 / TCP" --> CFW
+    EDGE -- "20004" --> CFW
 end
 
 %% =========================
@@ -82,8 +84,8 @@ end
 
 CFW --> COMFW
 
-AGENT -. "Fleet Communication : 8220" .-> INET
-INET -.-> FLEET
+WIN -. "Fleet Communication : 20003" .-> CFW
+CFW -.-> COMFW -."8220".-> FLEET
 ```
 
 ---
