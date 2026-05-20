@@ -38,8 +38,8 @@ subgraph CLIENT["CLIENT NETWORK"]
 
     FW --  "syslog 514" --> EDGE
     KFW -- "To Agent 5514" --> EDGE
-    LNX -- "From Agent 5044" --> EDGE
-    WIN -- "From Agent 5044" --> EDGE
+    LNX -- "5044" --> EDGE
+    WIN -- "5044" --> EDGE
     SW --  "syslog 514" --> EDGE
     RTR -- "syslog 514" --> EDGE
     OTH -- "syslog 514" --> EDGE
