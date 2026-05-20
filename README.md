@@ -82,7 +82,7 @@ end
 
 CFW --> COMFW
 
-WIN -. "Agent to Fleet:20003" .-> CFW
+WIN -.      "Agent to Fleet:20003" .-> CFW
 LNX -. "Agent to Fleet:20003" .-> CFW
 CFW -. "20003 Agent to Fleet 8220" .-> COMFW -."Agent to Fleet 8220".-> FLEET
 ```
