@@ -1,21 +1,24 @@
-# Elastic SIEM Log Flow Architecture
+# 🚀 ELK Stack Multi-Tier Architecture
 
-## Overview
-
-This project demonstrates a centralized Elastic SIEM log collection architecture using:
-
-- Logstash Edge Collectors
-- Logstash Central Processing
-- Elasticsearch
-- Kibana
-- Fleet Server
-- Elastic Agents
-
-The architecture is designed for secure and scalable log collection from client environments into a centralized Elastic Stack deployment.
+> Centralized log collection and monitoring architecture using Elasticsearch, Logstash, Kibana, Fleet Server, and Elastic Agents.
 
 ---
 
-# Architecture Flow Diagram
+# 📖 Architecture Overview
+
+This architecture provides centralized log collection and processing using:
+
+- Logstash Edge Collectors
+- Centralized Logstash Processing
+- Elasticsearch Cluster
+- Kibana Visualization
+- Fleet Server for Agent Management
+
+The design supports scalable, secure, and distributed log ingestion across multiple client environments.
+
+---
+
+# 🏗️ Architecture Flow Diagram
 
 ```mermaid
 flowchart LR
@@ -23,142 +26,99 @@ flowchart LR
 %% =========================
 %% CLIENT NETWORK
 %% =========================
-subgraph CLIENT["CLIENT NETWORK"]
+subgraph CLIENT["🏢 CLIENT NETWORK"]
 
-    KFW["Known Firewalls"]
-    LNX["Linux Servers With Fleet Agent"]
-    WIN["Windows Servers With Fleet Agent"]
-    SW["Switches"]
-    RTR["Routers"]
-    FW["Unknown Firewalls"]
-    OTH["Other Devices"]
+    FW["🔥 Firewalls"]
+    LNX["🐧 Linux Servers"]
+    WIN["🪟 Windows Servers"]
+    SW["🔀 Switches"]
+    RTR["📡 Routers"]
+    OTH["📦 Other Devices"]
 
+    AG["⚙️ Elastic Agents"]
 
-    EDGE["Logstash Edge Collector"]
+    EDGE["📥 Logstash Edge"]
 
-    FW --  "syslog 514" --> EDGE
-    KFW -- "To Agent 5514" --> EDGE
-    LNX -- "5044" --> EDGE
-    WIN -- "5044" --> EDGE
-    SW --  "syslog 514" --> EDGE
-    RTR -- "syslog 514" --> EDGE
-    OTH -- "syslog 514" --> EDGE
+    FW -->|"Syslog 514"| EDGE
+    SW -->|"Syslog 514"| EDGE
+    RTR -->|"Syslog 514"| EDGE
+    OTH -->|"Syslog 514"| EDGE
 
-    CFW["Client Firewall"]
+    LNX -->|"Beats 5044"| EDGE
+    WIN -->|"Beats 5044"| EDGE
 
-    EDGE -- "Logstash Edge To Central 20004" --> CFW
+    AG -.->|"Fleet 8220"| FLEET
+
+    CFW["🛡️ Client Firewall"]
+
+    EDGE -->|"TCP 20004"| CFW
 end
-
-%% =========================
-%% WAN / INTERNET
-%% =========================
-
-
 
 %% =========================
 %% COMTEL NETWORK
 %% =========================
-subgraph COMTEL["COMTEL NETWORK"]
+subgraph COMTEL["☁️ COMTEL NETWORK"]
 
-    COMFW["Comtel Firewall"]
+    COMFW["🛡️ Comtel Firewall"]
 
-    CENTRAL["Logstash Central"]
+    CENTRAL["📊 Logstash Central"]
 
-    ES["Elasticsearch"]
+    ES["🗄️ Elasticsearch"]
 
-    KB["Kibana"]
+    KB["📈 Kibana"]
 
-    FLEET["Fleet Server"]
+    FLEET["⚙️ Fleet Server"]
 
-    COMFW -- "9800" --> CENTRAL
+    COMFW -->|"TCP 9800"| CENTRAL
 
-    CENTRAL -- "9200 / HTTPS" --> ES
+    CENTRAL -->|"HTTPS 9200"| ES
 
-    ES -- "5601 / HTTPS" --> KB
+    ES -->|"HTTPS 5601"| KB
 
+    CENTRAL -->|"HTTPS 8220"| FLEET
 end
 
-CFW -- "20004 Edge To Central 9800" --> COMFW
-
-WIN -. "Agent to Fleet:20003" .-> CFW
-LNX -. "Agent to Fleet:20003" .-> CFW
-CFW -. "20003 Agent to Fleet 8220" .-> COMFW -."Agent to Fleet 8220".-> FLEET
+CFW -->|"NAT 20004 → 9800"| COMFW
 ```
 
 ---
 
-# Components
+# 📊 Data Flow
 
-## Client Network
+## Phase 1 — Device Log Collection
 
-### Log Sources
+Client devices send logs to the Logstash Edge collector.
 
-The following devices generate logs:
-
-| Device | Protocol | Port |
+| Device Type | Protocol | Port |
 |---|---|---|
 | Firewalls | Syslog | 514 |
-| Linux Servers | Syslog | 514 |
-| Windows Servers | Syslog | 514 |
+| Linux Servers | Beats | 5044 |
+| Windows Servers | Beats | 5044 |
 | Switches | Syslog | 514 |
 | Routers | Syslog | 514 |
 | Other Devices | Syslog | 514 |
 
 ---
 
-## Elastic Agents
+## Phase 2 — Edge to Central
 
-Elastic Agents can be installed on endpoints for advanced monitoring and telemetry collection.
-
-| Service | Port |
-|---|---|
-| Beats / Elastic Agent | 5044 |
-| Fleet Server Communication | 8220 |
-
----
-
-# Log Flow
-
-## Step 1 — Device Log Collection
-
-Client devices forward logs to:
+Logs are securely forwarded:
 
 ```text
-Logstash Edge Collector
-```
-
-Protocols used:
-
-- Syslog → Port 514
-- Beats → Port 5044
-
----
-
-## Step 2 — Secure Forwarding
-
-The Edge Collector securely forwards logs through:
-
-```text
-Client Firewall → Comtel Firewall
+Logstash Edge → Client Firewall → Comtel Firewall → Logstash Central
 ```
 
 Using:
 
 ```text
-TCP Port 5044
+TCP Port 20004 → NAT → 9800
 ```
 
 ---
 
-## Step 3 — Central Processing
+## Phase 3 — Central Processing
 
-Logs arrive at:
-
-```text
-Logstash Central
-```
-
-Functions performed:
+Logstash Central performs:
 
 - Parsing
 - Filtering
@@ -167,106 +127,203 @@ Functions performed:
 
 ---
 
-## Step 4 — Elasticsearch Indexing
+## Phase 4 — Elasticsearch Indexing
 
-Processed logs are forwarded to:
-
-```text
-Elasticsearch
-```
-
-Using:
+Processed logs are indexed into Elasticsearch.
 
 ```text
-Port 9200 (HTTPS)
+Port: 9200 / HTTPS
 ```
 
 ---
 
-## Step 5 — Visualization
+## Phase 5 — Visualization
 
-Kibana connects with Elasticsearch using:
-
-```text
-Port 5601 (HTTPS)
-```
-
-Used for:
+Kibana provides:
 
 - Dashboards
 - Search
-- Monitoring
 - Alerting
+- Monitoring
+
+```text
+Port: 5601 / HTTPS
+```
 
 ---
 
-# Fleet Server Communication
+# ⚙️ Fleet Server Communication
 
 Fleet Server manages Elastic Agents.
-
-## Features
-
-- Agent Enrollment
-- Policy Management
-- Monitoring
-- Configuration Updates
-
-## Communication Port
 
 | Service | Port |
 |---|---|
 | Fleet Server | 8220 |
 
-Agents connect through:
+Functions:
 
-
----
-
-# Port Summary
-
-| Port | Usage |
-|---|---|
-| 514 | Syslog Collection |
-| 5044 | Beats / Log Forwarding |
-| 8220 | Fleet Server Communication |
-| 9200 | Elasticsearch API |
-| 5601 | Kibana Web UI |
+- Agent Enrollment
+- Policy Management
+- Health Monitoring
+- Configuration Updates
 
 ---
 
-# End-to-End Flow
+# 🔌 Port Reference
+
+| Port | Protocol | Purpose |
+|------|-----------|----------|
+| 514 | UDP | Syslog Collection |
+| 5044 | TCP | Beats / Elastic Agent |
+| 8220 | HTTPS | Fleet Server |
+| 9200 | HTTPS | Elasticsearch API |
+| 5601 | HTTPS | Kibana UI |
+| 20004 | TCP | Edge to Central Forwarding |
+| 9800 | TCP | NAT Translated Central Port |
+
+---
+
+# 🔄 End-to-End Flow
 
 ```text
-Client Devices
-      ↓
+Devices
+   ↓
 Logstash Edge
-      ↓
+   ↓
 Client Firewall
-      ↓
+   ↓
 Comtel Firewall
-      ↓
+   ↓
 Logstash Central
-      ↓
+   ↓
 Elasticsearch
-      ↓
+   ↓
 Kibana
 ```
 
 ---
 
-# Advantages
+# 📥 Logstash Edge Example
 
-- Centralized log collection
-- Secure log forwarding
-- Scalable architecture
-- Elastic Agent support
-- Real-time monitoring
-- Easier troubleshooting
-- Centralized visibility
+```ruby
+input {
+
+  udp {
+    port => 514
+    type => "syslog"
+  }
+
+  tcp {
+    port => 5044
+    type => "beats"
+  }
+}
+
+output {
+
+  tcp {
+    host => "logstash-central"
+    port => 20004
+    codec => json
+  }
+}
+```
 
 ---
 
-# Technologies Used
+# 📤 Logstash Central Example
+
+```ruby
+input {
+
+  tcp {
+    port => 9800
+    codec => json
+  }
+}
+
+output {
+
+  elasticsearch {
+    hosts => ["https://elasticsearch:9200"]
+    index => "logs-%{+YYYY.MM.dd}"
+  }
+}
+```
+
+---
+
+# 🔐 Firewall Rules
+
+## Client Network
+
+### Inbound
+
+```text
+UDP 514   ← Syslog Devices
+TCP 5044  ← Elastic Agents
+```
+
+### Outbound
+
+```text
+TCP 20004 → Comtel Network
+TCP 8220  → Fleet Server
+```
+
+---
+
+## Comtel Network
+
+### Inbound
+
+```text
+TCP 9800 ← Logstash Edge
+TCP 8220 ← Elastic Agents
+```
+
+---
+
+# ✅ Architecture Benefits
+
+- Centralized logging platform
+- Secure firewall-separated design
+- Scalable edge collection
+- Fleet-based agent management
+- Easy troubleshooting
+- Real-time monitoring
+- Distributed processing model
+- Elasticsearch scalability
+
+---
+
+# 📌 Deployment Notes
+
+- Use TLS encryption wherever possible
+- Enable Logstash persistent queues
+- Configure Elasticsearch ILM policies
+- Monitor JVM memory usage
+- Enable Kibana authentication
+- Restrict access using firewall rules
+
+---
+
+# 📂 Recommended Repository Structure
+
+```text
+ELK-config/
+│
+├── README.md
+├── architecture-diagram.png
+├── configs/
+│   ├── logstash-edge/
+│   ├── logstash-central/
+│   └── elastic-agent/
+```
+
+---
+
+# 🛠️ Technologies Used
 
 - Elasticsearch
 - Kibana
@@ -278,17 +335,8 @@ Kibana
 
 ---
 
-# Recommended Repository Structure
+# 📜 License
 
-```text
-project/
-│
-├── README.md
-├── architecture-diagram.png
-└── configs/
-    ├── logstash-edge/
-    ├── logstash-central/
-    └── elastic-agent/
-```
+This project is intended for internal infrastructure and monitoring deployments.
 
 ---
