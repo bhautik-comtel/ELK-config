@@ -281,25 +281,21 @@ TCP 20003 → Agent to Fleet Manager Communication
 
 ## Comtel Network
 
-### Inbound
+### Firewall Inbound 
 
 ```text
-TCP 9800 ← Logstash Edge
-TCP 8220 ← Elastic Agents
+TCP 20004 → To Central Logstash
+TCP 20003 → Agent to Fleet Manager Communication
+```
+
+### Firewall Outbound
+
+```text
+TCP 8220 → Agent to Fleet Manager Communication
 ```
 
 ---
 
-# 🔐 Security Recommendations
-
-- Enable TLS encryption
-- Restrict Kibana access
-- Enable Elasticsearch authentication
-- Use API keys instead of passwords
-- Apply firewall ACL restrictions
-- Enable Logstash persistent queues
-
----
 
 # 🗄️ Index Lifecycle Management
 
@@ -322,17 +318,6 @@ TCP 8220 ← Elastic Agents
 
 ---
 
-# ✅ Architecture Benefits
-
-- Centralized logging platform
-- Secure multi-network architecture
-- Scalable edge collection
-- Fleet-based agent management
-- Real-time monitoring
-- Easier troubleshooting
-- Distributed processing model
-
----
 
 # 📌 Deployment Notes
 
@@ -344,7 +329,7 @@ TCP 8220 ← Elastic Agents
 - Use dedicated ingest pipelines
 
 ---
-
+# NEED TO EDIT
 # 🔍 Troubleshooting
 
 ## Check Listening Ports
@@ -379,20 +364,6 @@ curl -k https://localhost:5601
 
 ---
 
-# 📂 Repository Structure
-
-```text
-ELK-config/
-│
-├── README.md
-├── architecture-diagram.png
-├── configs/
-│   ├── logstash-edge/
-│   ├── logstash-central/
-│   └── elastic-agent/
-```
-
----
 
 # 🚀 Future Improvements
 
@@ -406,7 +377,7 @@ ELK-config/
 
 # 👨‍💻 Maintainer
 
-Bhautik  
+Bhautik  Patil
 Comtel Infrastructure Team
 
 ---
